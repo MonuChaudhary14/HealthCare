@@ -2,14 +2,19 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from patients.models import Patient
 from .models import PatientDoctorMapping
 from .serializers import PatientDoctorMappingSerializer
 
 
 class MappingListCreateView(generics.ListCreateAPIView):
-    queryset = PatientDoctorMapping.objects.all().select_related("patient", "doctor")
     serializer_class = PatientDoctorMappingSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return PatientDoctorMapping.objects.filter(
+            patient__created_by=self.request.user
+        ).select_related("patient", "doctor")
 
     def get_serializer_context(self):
         context = super().get_serializer_context()
@@ -21,9 +26,17 @@ class MappingDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get(self, request, pk):
-        mappings = PatientDoctorMapping.objects.filter(patient_id=pk).select_related(
-            "patient", "doctor"
-        )
+        if not Patient.objects.filter(id=pk, created_by=request.user).exists():
+            return Response(
+                {"error": "Patient not found or you do not have permission to view this patient's mappings."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        mappings = PatientDoctorMapping.objects.filter(
+            patient_id=pk,
+            patient__created_by=request.user,
+        ).select_related("patient", "doctor")
+
         serializer = PatientDoctorMappingSerializer(
             mappings, many=True, context={"request": request}
         )
