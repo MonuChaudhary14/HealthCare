@@ -158,3 +158,5 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": False,
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
