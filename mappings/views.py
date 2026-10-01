@@ -11,6 +11,11 @@ class MappingListCreateView(generics.ListCreateAPIView):
     serializer_class = PatientDoctorMappingSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context
+
 
 class MappingDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -19,12 +24,19 @@ class MappingDetailView(APIView):
         mappings = PatientDoctorMapping.objects.filter(patient_id=pk).select_related(
             "patient", "doctor"
         )
-        serializer = PatientDoctorMappingSerializer(mappings, many=True)
+        serializer = PatientDoctorMappingSerializer(
+            mappings, many=True, context={"request": request}
+        )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def delete(self, request, pk):
         try:
             mapping = PatientDoctorMapping.objects.get(pk=pk)
+            if mapping.patient.created_by != request.user:
+                return Response(
+                    {"error": "You do not have permission to remove this mapping."},
+                    status=status.HTTP_403_FORBIDDEN,
+                )
             mapping.delete()
             return Response(
                 {"message": "Doctor assignment removed successfully."},
