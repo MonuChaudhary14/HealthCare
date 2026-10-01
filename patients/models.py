@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 
+
 class Patient(models.Model):
     GENDER_CHOICES = [
         ("Male", "Male"),
@@ -24,4 +25,3 @@ class Patient(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.gender}, {self.age})"
-

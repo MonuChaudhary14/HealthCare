@@ -1,6 +1,8 @@
 from rest_framework import generics, permissions
+
 from .models import Patient
 from .serializers import PatientSerializer
+
 
 class PatientListCreateView(generics.ListCreateAPIView):
     serializer_class = PatientSerializer

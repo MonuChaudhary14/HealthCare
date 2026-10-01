@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from .models import Doctor
+
 
 class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,5 +27,7 @@ class DoctorSerializer(serializers.ModelSerializer):
 
     def validate_experience_years(self, value):
         if value < 0 or value > 80:
-            raise serializers.ValidationError("Experience years must be between 0 and 80.")
+            raise serializers.ValidationError(
+                "Experience years must be between 0 and 80."
+            )
         return value

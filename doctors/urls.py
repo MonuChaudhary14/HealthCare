@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import DoctorListCreateView, DoctorDetailView
+
+from .views import DoctorDetailView, DoctorListCreateView
 
 urlpatterns = [
     path("", DoctorListCreateView.as_view(), name="doctor_list_create"),
