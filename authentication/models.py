@@ -10,7 +10,7 @@ class UserManager(BaseUserManager):
         email = self.normalize_email(email)
         user = self.model(email = email, name = name, **extra_fields)
         user.set_password(password)
-        user.save(using=self.db)
+        user.save(using=self._db)
         return user
 
     def create_superuser(self, email, name, password=None, **extra_fields):
@@ -23,6 +23,7 @@ class UserManager(BaseUserManager):
         return self.create_user(email, name, password, **extra_fields)
 
 class User(AbstractUser):
+    username = None
     name = models.CharField(max_length =255)
     email = models.EmailField(unique=True)
 
