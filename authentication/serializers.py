@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from django.contrib.auth import authenticate, get_user_model
+from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
@@ -10,7 +10,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'name', 'email', 'password']
+        fields = ["id", "name", "email", "password"]
 
     def validate_email(self, value):
         if User.objects.filter(email__iexact=value).exists():
@@ -19,9 +19,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(
-            email=validated_data['email'],
-            name=validated_data['name'],
-            password=validated_data['password']
+            email=validated_data["email"],
+            name=validated_data["name"],
+            password=validated_data["password"],
         )
         return user
 
@@ -31,8 +31,8 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
-        email = attrs.get('email').lower()
-        password = attrs.get('password')
+        email = attrs.get("email").lower()
+        password = attrs.get("password")
 
         user = authenticate(email=email, password=password)
         if not user:
@@ -42,11 +42,11 @@ class LoginSerializer(serializers.Serializer):
 
         refresh = RefreshToken.for_user(user)
         return {
-            'user': {
-                'id': user.id,
-                'name': user.name,
-                'email': user.email,
+            "user": {
+                "id": user.id,
+                "name": user.name,
+                "email": user.email,
             },
-            'access': str(refresh.access_token),
-            'refresh': str(refresh),
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
         }
