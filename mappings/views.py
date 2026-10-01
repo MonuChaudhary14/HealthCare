@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from patients.models import Patient
+
 from .models import PatientDoctorMapping
 from .serializers import PatientDoctorMappingSerializer
 
@@ -28,7 +29,9 @@ class MappingDetailView(APIView):
     def get(self, request, pk):
         if not Patient.objects.filter(id=pk, created_by=request.user).exists():
             return Response(
-                {"error": "Patient not found or you do not have permission to view this patient's mappings."},
+                {
+                    "error": "Patient not found or you do not have permission to view this patient's mappings."
+                },
                 status=status.HTTP_404_NOT_FOUND,
             )
 

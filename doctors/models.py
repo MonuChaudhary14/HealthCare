@@ -10,10 +10,10 @@ class Doctor(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"Dr. {self.name} - {self.specialization}"
+
     def save(self, *args, **kwargs):
         if self.email:
             self.email = self.email.strip().lower()
         super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"Dr. {self.name} - {self.specialization}"

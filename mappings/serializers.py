@@ -43,14 +43,18 @@ class PatientDoctorMappingSerializer(serializers.ModelSerializer):
             if patient.created_by != request.user:
                 raise serializers.ValidationError(
                     {
-                        "patient_id": ["You do not have permission to assign doctors to this patient."]
+                        "patient_id": [
+                            "You do not have permission to assign doctors to this patient."
+                        ]
                     }
                 )
 
         if PatientDoctorMapping.objects.filter(patient=patient, doctor=doctor).exists():
             raise serializers.ValidationError(
                 {
-                    "non_field_errors": ["This doctor is already assigned to the selected patient."]
+                    "non_field_errors": [
+                        "This doctor is already assigned to the selected patient."
+                    ]
                 }
             )
 

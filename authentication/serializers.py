@@ -16,7 +16,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate_name(self, value):
         cleaned_name = value.strip()
         if len(cleaned_name) < 2:
-            raise serializers.ValidationError("Name must be at least 2 characters long.")
+            raise serializers.ValidationError(
+                "Name must be at least 2 characters long."
+            )
         return cleaned_name
 
     def validate_email(self, value):

@@ -18,6 +18,22 @@ class DoctorSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
 
+    def validate_name(self, value):
+        cleaned_name = value.strip()
+        if len(cleaned_name) < 2:
+            raise serializers.ValidationError(
+                "Doctor name must be at least 2 characters long."
+            )
+        return cleaned_name
+
+    def validate_specialization(self, value):
+        cleaned_spec = value.strip()
+        if len(cleaned_spec) < 2:
+            raise serializers.ValidationError(
+                "Specialization must be at least 2 characters long."
+            )
+        return cleaned_spec
+
     def validate_email(self, value):
         email = value.strip().lower()
         existing = Doctor.objects.filter(email__iexact=email)
@@ -50,11 +66,3 @@ class DoctorSerializer(serializers.ModelSerializer):
                 "Experience years must be between 0 and 70."
             )
         return value
-
-    def validate_name(self, value):
-        cleaned_name = value.strip()
-        if len(cleaned_name) < 2:
-            raise serializers.ValidationError(
-                "Doctor name must be at least 2 characters long."
-            )
-        return cleaned_name
